@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.cbse.playersystem;
+package dk.sdu.mmmi.cbse.enemysystem;
 
 import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
@@ -13,38 +13,37 @@ import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
 
-public class PlayerControlSystem implements IEntityProcessingService {
+public class EnemyControlSystem implements IEntityProcessingService {
     private static final long SHOOT_COOLDOWN = 200; // 500ms between shots
     private long lastShotTime = 0;
 
     @Override
     public void process(GameData gameData, World world) {
         long currentTime = System.currentTimeMillis();
-            
-        for (Entity player : world.getEntities(Player.class)) {
-            if (gameData.getKeys().isDown(GameKeys.LEFT)) {
-                player.setRotation(player.getRotation() - 5);                
+
+        for (Entity player : world.getEntities(Enemy.class)) {
+            double random = Math.random();
+
+            if (random < 0.3) {
+                player.setRotation(player.getRotation() - 5);
+            } else if (random < 0.6) {
+                player.setRotation(player.getRotation() + 5);
             }
-            if (gameData.getKeys().isDown(GameKeys.RIGHT)) {
-                player.setRotation(player.getRotation() + 5);                
-            }
-            if (gameData.getKeys().isDown(GameKeys.UP)) {
-                double changeX = Math.cos(Math.toRadians(player.getRotation()));
-                double changeY = Math.sin(Math.toRadians(player.getRotation()));
+
+            if (random < 0.7) {
+                double changeX = Math.cos(Math.toRadians(player.getRotation())) * 2;
+                double changeY = Math.sin(Math.toRadians(player.getRotation())) * 2;
                 player.setX(player.getX() + changeX);
                 player.setY(player.getY() + changeY);
             }
-            if(gameData.getKeys().isDown(GameKeys.SPACE)) {
-                
-                // Check if enough time has passed since last shot
-                if (currentTime - lastShotTime >= SHOOT_COOLDOWN) {
-                    getBulletSPIs().stream().findFirst().ifPresent(
-                            spi -> {world.addEntity(spi.createBullet(player, gameData));}
-                    );
-                    lastShotTime = currentTime;
-                }
+            // Check if enough time has passed since the last shot
+            if (currentTime - lastShotTime >= SHOOT_COOLDOWN) {
+                getBulletSPIs().stream().findFirst().ifPresent(
+                        spi -> {world.addEntity(spi.createBullet(player, gameData));}
+                );
+                lastShotTime = currentTime;
             }
-            
+
             if (player.getX() < 0) {
                 player.setX(1);
             }
