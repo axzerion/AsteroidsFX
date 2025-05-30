@@ -134,11 +134,6 @@ class Game {
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
-            
-            // Set color if specified
-            if (entity.getColor() != null) {
-                polygon.setFill(javafx.scene.paint.Color.valueOf(entity.getColor()));
-            }
         }
 
     }
