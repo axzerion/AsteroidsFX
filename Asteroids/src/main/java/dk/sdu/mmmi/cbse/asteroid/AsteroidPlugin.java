@@ -11,30 +11,30 @@ import java.util.Random;
 
 public class AsteroidPlugin implements IGamePluginService {
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     // Creates initial asteroids
     @Override
     public void start(GameData gameData, World world) {
         for (int i = 0; i < 20; i++) {
-            Entity asteroid = createAsteroid(gameData, AsteroidSize.LARGE);
+            Entity asteroid = createAsteroid(gameData);
             world.addEntity(asteroid);
         }
     }
 
     
-    private Entity createAsteroid(GameData gameData, AsteroidSize size) {
-        Entity asteroid = new Asteroid();
-        ((Asteroid)asteroid).setSize(size); 
-        int radius = size.getRadius();
+    private Entity createAsteroid(GameData gameData) {
+        Asteroid asteroid = new Asteroid();
+        asteroid.setSize(AsteroidSize.LARGE);
+        int radius = AsteroidSize.LARGE.getRadius();
         
         asteroid.setPolygonCoordinates(
             radius, 0,
-            radius/2, radius*0.866,
-            -radius/2, radius*0.866,
+            (double) radius /2, radius*0.866,
+            (double) -radius /2, radius*0.866,
             -radius, 0,
-            -radius/2, -radius*0.866,
-            radius/2, -radius*0.866
+            (double) -radius /2, -radius*0.866,
+            (double) radius /2, -radius*0.866
         );
         
         asteroid.setRadius(radius);

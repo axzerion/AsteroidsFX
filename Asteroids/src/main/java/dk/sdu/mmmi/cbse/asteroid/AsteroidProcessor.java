@@ -11,8 +11,7 @@ import java.util.Random;
 
 public class AsteroidProcessor implements IEntityProcessingService {
 
-    private IAsteroidSplitter asteroidSplitter = new AsteroidSplitterImpl();
-    private Random random = new Random();
+    private final Random random = new Random();
     private long lastSpawnTime = 0;
 
     @Override
@@ -54,16 +53,16 @@ public class AsteroidProcessor implements IEntityProcessingService {
         Entity asteroid = new Asteroid();
         ((Asteroid)asteroid).setSize(size);
         int radius = size.getRadius();
-        
+
         asteroid.setPolygonCoordinates(
             radius, 0,
-            radius/2, radius*0.866,
-            -radius/2, radius*0.866,
+            (double) radius /2, radius*0.866,
+            (double) -radius /2, radius*0.866,
             -radius, 0,
-            -radius/2, -radius*0.866,
-            radius/2, -radius*0.866
+            (double) -radius /2, -radius*0.866,
+            (double) radius /2, -radius*0.86
         );
-        
+
         asteroid.setRadius(radius);
 
         // Set random position at screen edges
@@ -76,10 +75,10 @@ public class AsteroidProcessor implements IEntityProcessingService {
             asteroid.setX(random.nextInt(gameData.getDisplayWidth()));
             asteroid.setY(random.nextBoolean() ? 0 : gameData.getDisplayHeight());
         }
-    
+
         // Set random rotation
         asteroid.setRotation(Math.random() * 360);
-        
+
         return asteroid;
     }
 
@@ -87,10 +86,8 @@ public class AsteroidProcessor implements IEntityProcessingService {
      * Dependency Injection using OSGi Declarative Services
      */
     public void setAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = asteroidSplitter;
     }
 
     public void removeAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = null;
     }
 }

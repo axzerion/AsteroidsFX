@@ -34,7 +34,7 @@ class Game {
     private final List<IEntityProcessingService> entityProcessingServiceList;
     private final List<IPostEntityProcessingService> postEntityProcessingServices;
 
-    Game() {
+    Game(List<IGamePluginService> gamePluginServices, List<IEntityProcessingService> entityProcessingServiceList, List<IPostEntityProcessingService> postEntityProcessingServices) {
         this.gamePluginServices = gamePluginServices;
         this.entityProcessingServiceList = entityProcessingServiceList;
         this.postEntityProcessingServices = postEntityProcessingServices;
@@ -51,6 +51,23 @@ class Game {
         gameWindow.getChildren().add(playerHealthText);
         gameWindow.getChildren().add(enemyHealthText);
 
+        Scene scene = getScene();
+
+        // Look up all Game Plugins using ServiceLoader
+        for (IGamePluginService iGamePlugin : getGamePluginServices()) {
+            iGamePlugin.start(gameData, world);
+        }
+        for (Entity entity : world.getEntities()) {
+            Polygon polygon = new Polygon(entity.getPolygonCoordinates());
+            polygons.put(entity, polygon);
+            gameWindow.getChildren().add(polygon);
+        }
+        window.setScene(scene);
+        window.setTitle("ASTEROIDS");
+        window.show();
+    }
+
+    private Scene getScene() {
         Scene scene = new Scene(gameWindow);
         scene.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.LEFT)) {
@@ -81,19 +98,7 @@ class Game {
             }
 
         });
-
-        // Lookup all Game Plugins using ServiceLoader
-        for (IGamePluginService iGamePlugin : getGamePluginServices()) {
-            iGamePlugin.start(gameData, world);
-        }
-        for (Entity entity : world.getEntities()) {
-            Polygon polygon = new Polygon(entity.getPolygonCoordinates());
-            polygons.put(entity, polygon);
-            gameWindow.getChildren().add(polygon);
-        }
-        window.setScene(scene);
-        window.setTitle("ASTEROIDS");
-        window.show();
+        return scene;
     }
 
     public void render() {
@@ -137,7 +142,7 @@ class Game {
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
 
-            // Set color based on the entity type
+            // Set color based on the entity type.
             if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
                 polygon.setFill(javafx.scene.paint.Color.RED);
             } else if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {

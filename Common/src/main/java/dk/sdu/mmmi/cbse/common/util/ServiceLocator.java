@@ -13,7 +13,7 @@ public enum ServiceLocator {
 
     INSTANCE;
 
-    private static final Map<Class, ServiceLoader> loadermap = new HashMap<>();
+    private static final Map<Class<?>, ServiceLoader<?>> loadermap = new HashMap<>();
     private final ModuleLayer layer;
 
     ServiceLocator() {
