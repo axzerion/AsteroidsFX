@@ -8,7 +8,6 @@
     </parent>
     <artifactId>CommonAsteroids</artifactId>
     <packaging>jar</packaging>
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

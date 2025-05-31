@@ -49,6 +49,12 @@ class Game {
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
 
+        // Create health bar texts
+        Text playerHealthText = new Text(10, 40, "Player Health: 5");
+        Text enemyHealthText = new Text(gameData.getDisplayWidth() - 150, 40, "Enemy Health: 5");
+        gameWindow.getChildren().add(playerHealthText);
+        gameWindow.getChildren().add(enemyHealthText);
+
         Scene scene = new Scene(gameWindow);
         scene.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.LEFT)) {
@@ -134,8 +140,29 @@ class Game {
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
-        }
 
+            // Set color based on entity type
+            if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
+                polygon.setFill(javafx.scene.paint.Color.RED);
+            } else if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
+                polygon.setFill(javafx.scene.paint.Color.BLACK);
+            }
+
+            // Update health bars
+            if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
+                for (javafx.scene.Node node : gameWindow.getChildren()) {
+                    if (node instanceof Text && ((Text) node).getText().startsWith("Player Health:")) {
+                        ((Text) node).setText("Player Health: " + ((dk.sdu.mmmi.cbse.playersystem.Player) entity).getHealth());
+                    }
+                }
+            } else if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
+                for (javafx.scene.Node node : gameWindow.getChildren()) {
+                    if (node instanceof Text && ((Text) node).getText().startsWith("Enemy Health:")) {
+                        ((Text) node).setText("Enemy Health: " + ((dk.sdu.mmmi.cbse.enemysystem.Enemy) entity).getHealth());
+                    }
+                }
+            }
+        }
     }
 
     public List<IGamePluginService> getGamePluginServices() {

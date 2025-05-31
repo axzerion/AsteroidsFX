@@ -1,5 +1,4 @@
 dk\sdu\mmmi\cbse\common\asteroids\Asteroid.class
 module-info.class
-dk\sdu\mmmi\cbse\common\asteroids\Asteroid$1.class
 dk\sdu\mmmi\cbse\common\asteroids\IAsteroidSplitter.class
-dk\sdu\mmmi\cbse\common\asteroids\Asteroid$Size.class
+dk\sdu\mmmi\cbse\common\asteroids\AsteroidSize.class

@@ -7,9 +7,7 @@
     <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>AsteroidsFX</name>
-    <repositories>
-    </repositories>
-
+    
     <modules>
         <module>Core</module>
         <module>Common</module>
@@ -19,6 +17,8 @@
         <module>CommonAsteroids</module>
         <module>Asteroids</module>
         <module>Collision</module>
+        <module>Enemy</module>
+
     </modules>
     <properties>
         <java>java</java>

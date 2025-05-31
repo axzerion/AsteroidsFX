@@ -4,6 +4,7 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
+
 public class PlayerPlugin implements IGamePluginService {
 
     private Entity player;
@@ -22,9 +23,9 @@ public class PlayerPlugin implements IGamePluginService {
     private Entity createPlayerShip(GameData gameData) {
 
         Entity playerShip = new Player();
-        playerShip.setPolygonCoordinates(-5,-5,10,0,-5,5);
-        playerShip.setX(gameData.getDisplayHeight()/2);
-        playerShip.setY(gameData.getDisplayWidth()/2);
+        playerShip.setPolygonCoordinates(-10,-10,20,0,-10,10);
+        playerShip.setX(700);
+        playerShip.setY(gameData.getDisplayHeight()/2);
         playerShip.setRadius(8);
         return playerShip;
     }
