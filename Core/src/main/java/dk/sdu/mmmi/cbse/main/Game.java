@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dk.sdu.mmmi.cbse.main;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
@@ -10,7 +14,6 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -19,6 +22,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 
 public class Game extends Application {
 
@@ -29,63 +34,69 @@ public class Game extends Application {
     private final List<IGamePluginService> gamePluginServices;
     private final List<IEntityProcessingService> entityProcessingServiceList;
     private final List<IPostEntityProcessingService> postEntityProcessingServices;
+    private int score = 0;
 
-    public Game(List<IGamePluginService> gamePluginServices,
-                List<IEntityProcessingService> entityProcessingServiceList,
-                List<IPostEntityProcessingService> postEntityProcessingServices) {
+    Game(List<IGamePluginService> gamePluginServices, List<IEntityProcessingService> entityProcessingServiceList, List<IPostEntityProcessingService> postEntityProcessingServices) {
         this.gamePluginServices = gamePluginServices;
         this.entityProcessingServiceList = entityProcessingServiceList;
         this.postEntityProcessingServices = postEntityProcessingServices;
     }
 
-    @Override
-    public void start(Stage window) {
-        System.out.println("Starting game with " + gamePluginServices.size() + " plugins");
+    public void start(Stage window) throws Exception {
+        Text text = new Text(10, 20, "Destroyed asteroids: " + score);
 
-        Text text = new Text(10, 20, "Score: 0");
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
 
+        // Create health bar texts
         Text playerHealthText = new Text(10, 40, "Player Health: 5");
         Text enemyHealthText = new Text(gameData.getDisplayWidth() - 150, 40, "Enemy Health: 5");
         gameWindow.getChildren().add(playerHealthText);
         gameWindow.getChildren().add(enemyHealthText);
 
-        Scene scene = getScene();
+        Scene scene = new Scene(gameWindow);
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.LEFT)) {
+                gameData.getKeys().setKey(GameKeys.LEFT, true);
+            }
+            if (event.getCode().equals(KeyCode.RIGHT)) {
+                gameData.getKeys().setKey(GameKeys.RIGHT, true);
+            }
+            if (event.getCode().equals(KeyCode.UP)) {
+                gameData.getKeys().setKey(GameKeys.UP, true);
+            }
+            if (event.getCode().equals(KeyCode.SPACE)) {
+                gameData.getKeys().setKey(GameKeys.SPACE, true);
+            }
+        });
+        scene.setOnKeyReleased(event -> {
+            if (event.getCode().equals(KeyCode.LEFT)) {
+                gameData.getKeys().setKey(GameKeys.LEFT, false);
+            }
+            if (event.getCode().equals(KeyCode.RIGHT)) {
+                gameData.getKeys().setKey(GameKeys.RIGHT, false);
+            }
+            if (event.getCode().equals(KeyCode.UP)) {
+                gameData.getKeys().setKey(GameKeys.UP, false);
+            }
+            if (event.getCode().equals(KeyCode.SPACE)) {
+                gameData.getKeys().setKey(GameKeys.SPACE, false);
+            }
 
+        });
+
+        // Lookup all Game Plugins using ServiceLoader
         for (IGamePluginService iGamePlugin : getGamePluginServices()) {
-            System.out.println("Starting plugin: " + iGamePlugin.getClass().getName());
             iGamePlugin.start(gameData, world);
         }
-
-        System.out.println("Entities after plugin start: " + world.getEntities().size());
-
         for (Entity entity : world.getEntities()) {
             Polygon polygon = new Polygon(entity.getPolygonCoordinates());
             polygons.put(entity, polygon);
             gameWindow.getChildren().add(polygon);
         }
-
         window.setScene(scene);
         window.setTitle("ASTEROIDS");
         window.show();
-    }
-
-    private Scene getScene() {
-        Scene scene = new Scene(gameWindow);
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.LEFT)) gameData.getKeys().setKey(GameKeys.LEFT, true);
-            if (event.getCode().equals(KeyCode.RIGHT)) gameData.getKeys().setKey(GameKeys.RIGHT, true);
-            if (event.getCode().equals(KeyCode.UP)) gameData.getKeys().setKey(GameKeys.UP, true);
-            if (event.getCode().equals(KeyCode.SPACE)) gameData.getKeys().setKey(GameKeys.SPACE, true);
-        });
-        scene.setOnKeyReleased(event -> {
-            if (event.getCode().equals(KeyCode.LEFT)) gameData.getKeys().setKey(GameKeys.LEFT, false);
-            if (event.getCode().equals(KeyCode.RIGHT)) gameData.getKeys().setKey(GameKeys.RIGHT, false);
-            if (event.getCode().equals(KeyCode.UP)) gameData.getKeys().setKey(GameKeys.UP, false);
-            if (event.getCode().equals(KeyCode.SPACE)) gameData.getKeys().setKey(GameKeys.SPACE, false);
-        });
-        return scene;
     }
 
     public void render() {
@@ -96,66 +107,75 @@ public class Game extends Application {
                 draw();
                 gameData.getKeys().update();
             }
+
         }.start();
     }
 
     private void update() {
-        for (IEntityProcessingService service : getEntityProcessingServices()) {
-            service.process(gameData, world);
+        for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
+            entityProcessorService.process(gameData, world);
         }
-        for (IPostEntityProcessingService service : getPostEntityProcessingServices()) {
-            service.process(gameData, world);
+        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
+            postEntityProcessorService.process(gameData, world);
         }
     }
 
     private void draw() {
-        for (Entity entity : polygons.keySet()) {
-            if (!world.getEntities().contains(entity)) {
-                Polygon removedPolygon = polygons.remove(entity);
+        for (Entity polygonEntity : polygons.keySet()) {
+            if (!world.getEntities().contains(polygonEntity)) {
+                Polygon removedPolygon = polygons.get(polygonEntity);
+                polygons.remove(polygonEntity);
                 gameWindow.getChildren().remove(removedPolygon);
+            }
+            for (javafx.scene.Node node : gameWindow.getChildren()) {
+                if (node instanceof Text && ((Text) node).getText().startsWith("Destroyed asteroids:")) {
+                    ((Text) node).setText("Score: " + gameData.getScore());
+                }
             }
         }
 
         for (Entity entity : world.getEntities()) {
-            Polygon polygon = polygons.computeIfAbsent(entity,
-                    e -> {
-                        Polygon p = new Polygon(e.getPolygonCoordinates());
-                        gameWindow.getChildren().add(p);
-                        return p;
-                    });
+            Polygon polygon = polygons.get(entity);
+            if (polygon == null) {
+                polygon = new Polygon(entity.getPolygonCoordinates());
+                polygons.put(entity, polygon);
+                gameWindow.getChildren().add(polygon);
+            }
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
 
-            String className = entity.getClass().getName();
-            if (className.equals("dk.sdu.mmmi.cbse.enemysystem.Enemy")) {
+            // Set color based on entity type
+            if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
                 polygon.setFill(javafx.scene.paint.Color.RED);
-            } else if (className.equals("dk.sdu.mmmi.cbse.playersystem.Player")) {
+            } else if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
                 polygon.setFill(javafx.scene.paint.Color.BLACK);
             }
 
-            for (javafx.scene.Node node : gameWindow.getChildren()) {
-                if (node instanceof Text textNode) {
-                    if (className.equals("dk.sdu.mmmi.cbse.playersystem.Player") && textNode.getText().startsWith("Player Health:")) {
-                        textNode.setText("Player Health: " + getFieldValue(entity, "health"));
-                    } else if (className.equals("dk.sdu.mmmi.cbse.enemysystem.Enemy") && textNode.getText().startsWith("Enemy Health:")) {
-                        textNode.setText("Enemy Health: " + getFieldValue(entity, "health"));
-                    } else if (textNode.getText().startsWith("Score:")) {
-                        textNode.setText("Score: " + dk.sdu.mmmi.cbse.common.data.Score.getPoints());
+            // Update health bars
+            if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
+                for (javafx.scene.Node node : gameWindow.getChildren()) {
+                    if (node instanceof Text && ((Text) node).getText().startsWith("Player Health:")) {
+                        ((Text) node).setText("Player Health: " + ((dk.sdu.mmmi.cbse.playersystem.Player) entity).getHealth());
+                    }
+                }
+            } else if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
+                for (javafx.scene.Node node : gameWindow.getChildren()) {
+                    if (node instanceof Text && ((Text) node).getText().startsWith("Enemy Health:")) {
+                        ((Text) node).setText("Enemy Health: " + ((dk.sdu.mmmi.cbse.enemysystem.Enemy) entity).getHealth());
                     }
                 }
             }
+            
         }
     }
 
-    private int getFieldValue(Entity entity, String fieldName) {
-        try {
-            var field = entity.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.getInt(entity);
-        } catch (Exception e) {
-            return -1;
-        }
+    public int getScore() {
+        return score;
+    }
+
+    public void addPoints(int points) {
+        this.score += points;
     }
 
     public List<IGamePluginService> getGamePluginServices() {
@@ -170,8 +190,4 @@ public class Game extends Application {
         return postEntityProcessingServices;
     }
 
-    @Override
-    public void stop() {
-        gamePluginServices.forEach(plugin -> plugin.stop(gameData, world));
-    }
 }
