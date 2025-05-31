@@ -1,7 +1,6 @@
 package dk.sdu.mmmi.cbse.asteroid;
 
 import dk.sdu.mmmi.cbse.common.asteroids.Asteroid;
-import dk.sdu.mmmi.cbse.common.asteroids.IAsteroidSplitter;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -16,10 +15,10 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        // Spawn new asteroid every second
+        // Spawn a new asteroid every second
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSpawnTime >= 1000) { // 1000ms = 1 second
-            Entity asteroid = createAsteroid(gameData, AsteroidSize.LARGE);
+            Entity asteroid = createAsteroid(gameData);
             world.addEntity(asteroid);
             lastSpawnTime = currentTime;
         }
@@ -49,10 +48,10 @@ public class AsteroidProcessor implements IEntityProcessingService {
         }
     }
 
-    private Entity createAsteroid(GameData gameData, AsteroidSize size) {
-        Entity asteroid = new Asteroid();
-        ((Asteroid)asteroid).setSize(size);
-        int radius = size.getRadius();
+    private Entity createAsteroid(GameData gameData) {
+        Asteroid asteroid = new Asteroid();
+        asteroid.setSize(AsteroidSize.LARGE);
+        int radius = AsteroidSize.LARGE.getRadius();
 
         asteroid.setPolygonCoordinates(
             radius, 0,
@@ -65,7 +64,7 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
         asteroid.setRadius(radius);
 
-        // Set random position at screen edges
+        // Set a random position at screen edges
         if (random.nextBoolean()) {
             // Spawn on left or right edge
             asteroid.setX(random.nextBoolean() ? 0 : gameData.getDisplayWidth());
@@ -82,12 +81,4 @@ public class AsteroidProcessor implements IEntityProcessingService {
         return asteroid;
     }
 
-    /**
-     * Dependency Injection using OSGi Declarative Services
-     */
-    public void setAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-    }
-
-    public void removeAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-    }
 }
