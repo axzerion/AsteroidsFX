@@ -3,39 +3,43 @@ package dk.sdu.mmmi.cbse.main;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import java.util.List;
-import java.util.ServiceLoader;
-import static java.util.stream.Collectors.toList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- *
- * @author jcs
- */
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Configuration
 class ModuleConfig {
-    
+
     public ModuleConfig() {
     }
 
     @Bean
-    public Game game(){
-        return new Game(gamePluginServices(), entityProcessingServiceList(), postEntityProcessingServices());
-    }
-
-    @Bean
-    public List<IEntityProcessingService> entityProcessingServiceList(){
-        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    public Game game(List<IGamePluginService> gamePluginServices,
+                     List<IEntityProcessingService> entityProcessingServices,
+                     List<IPostEntityProcessingService> postEntityProcessingServices) {
+        return new Game(gamePluginServices, entityProcessingServices, postEntityProcessingServices);
     }
 
     @Bean
     public List<IGamePluginService> gamePluginServices() {
-        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        // Load all discovered plugin modules from the /plugins folder
+        Set<String> moduleNames = PluginLoader.discoverModules("plugins");
+        return PluginLoader.loadPlugins("plugins", moduleNames, IGamePluginService.class);
+    }
+
+    @Bean
+    public List<IEntityProcessingService> entityProcessingServiceList() {
+        Set<String> moduleNames = PluginLoader.discoverModules("plugins");
+        return PluginLoader.loadPlugins("plugins", moduleNames, IEntityProcessingService.class);
     }
 
     @Bean
     public List<IPostEntityProcessingService> postEntityProcessingServices() {
-        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        Set<String> moduleNames = PluginLoader.discoverModules("plugins");
+        return PluginLoader.loadPlugins("plugins", moduleNames, IPostEntityProcessingService.class);
     }
 }
