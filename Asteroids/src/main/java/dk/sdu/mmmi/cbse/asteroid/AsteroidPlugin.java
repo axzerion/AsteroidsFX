@@ -39,7 +39,7 @@ public class AsteroidPlugin implements IGamePluginService {
         
         asteroid.setRadius(radius);
 
-        // Set random position at screen edges
+        // Set a random position at screen edges
         if (random.nextBoolean()) {
             // Spawn on left or right edge
             asteroid.setX(random.nextBoolean() ? 0 : gameData.getDisplayWidth());

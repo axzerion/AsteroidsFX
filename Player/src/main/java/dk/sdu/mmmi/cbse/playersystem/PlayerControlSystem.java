@@ -7,7 +7,6 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
-import java.util.Random;
 
 import java.util.Collection;
 import java.util.ServiceLoader;
@@ -16,8 +15,6 @@ import static java.util.stream.Collectors.toList;
 
 
 public class PlayerControlSystem implements IEntityProcessingService {
-
-    private Random random = new Random();
 
     private long lastShotTime = 0;
 
@@ -44,7 +41,11 @@ public class PlayerControlSystem implements IEntityProcessingService {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastShotTime >= 100) {
                     getBulletSPIs().stream().findFirst().ifPresent(
-                        spi -> {world.addEntity(spi.createBullet(player, gameData));}
+                        spi -> {
+                            Entity bullet = spi.createBullet(player, gameData);
+                            ((Bullet)bullet).setPlayerBullet(true);
+                            world.addEntity(bullet);
+                        }
                     );
                     lastShotTime = currentTime;
                 }

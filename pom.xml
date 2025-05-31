@@ -86,7 +86,7 @@
                 <version>${spring.version}</version>
             </dependency>
         </dependencies>
-    </dependencyManagement>    
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

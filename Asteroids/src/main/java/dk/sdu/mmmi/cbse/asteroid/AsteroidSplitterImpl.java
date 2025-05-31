@@ -13,7 +13,7 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
         if (!(e instanceof Asteroid asteroid)) return;
 
         AsteroidSize currentSize = asteroid.getSize();
-        AsteroidSize newSize = null;
+        AsteroidSize newSize;
 
         if (currentSize == AsteroidSize.LARGE) {
             newSize = AsteroidSize.MEDIUM;
@@ -34,11 +34,11 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
             // Polygon shape
             newAsteroid.setPolygonCoordinates(
                     radius, 0,
-                    radius / 2, radius * 0.866,
-                    -radius / 2, radius * 0.866,
+                    (double) radius / 2, radius * 0.866,
+                    (double) -radius / 2, radius * 0.866,
                     -radius, 0,
-                    -radius / 2, -radius * 0.866,
-                    radius / 2, -radius * 0.866
+                    (double) -radius / 2, -radius * 0.866,
+                    (double) radius / 2, -radius * 0.866
             );
 
             // Small random offset to avoid overlapping

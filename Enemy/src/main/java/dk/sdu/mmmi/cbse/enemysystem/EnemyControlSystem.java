@@ -40,7 +40,10 @@ public class EnemyControlSystem implements IEntityProcessingService {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastShotTime >= 100) {
                     getBulletSPIs().stream().findFirst().ifPresent(
-                        spi -> {world.addEntity(spi.createBullet(enemy, gameData));
+                        spi -> {
+                            Entity bullet = spi.createBullet(enemy, gameData);
+                            ((Bullet)bullet).setPlayerBullet(false);
+                            world.addEntity(bullet);
                         }
                     );
                     lastShotTime = currentTime;

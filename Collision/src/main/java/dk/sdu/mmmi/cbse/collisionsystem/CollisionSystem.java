@@ -11,6 +11,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.playersystem.Player;
 import dk.sdu.mmmi.cbse.common.asteroids.AsteroidSize;
 import dk.sdu.mmmi.cbse.enemysystem.Enemy;
+import dk.sdu.mmmi.cbse.common.data.Score;
 
 public class CollisionSystem implements IPostEntityProcessingService {
 
@@ -93,6 +94,19 @@ public class CollisionSystem implements IPostEntityProcessingService {
     private void handleAsteroidBulletCollision(Asteroid asteroid, Bullet bullet, World world) {
         world.removeEntity(bullet);
 
+        // Add points based on asteroid size
+        // Only award points if it's a player bullet
+        if (bullet.isPlayerBullet()) {
+            
+            if (asteroid.getSize() == AsteroidSize.LARGE) {
+                Score.addPoints(20);
+            } else if (asteroid.getSize() == AsteroidSize.MEDIUM) {
+                Score.addPoints(50);
+            } else if (asteroid.getSize() == AsteroidSize.SMALL) {
+                Score.addPoints(100);
+            }
+        }
+
         if (asteroid.getSize() != AsteroidSize.SMALL) {
             asteroidSplitter.createSplitAsteroid(asteroid, world);
         }
@@ -113,7 +127,7 @@ public class CollisionSystem implements IPostEntityProcessingService {
                 world.removeEntity(player);
             }
         },
-        500
+        100
     );
     }
 
@@ -130,7 +144,7 @@ public class CollisionSystem implements IPostEntityProcessingService {
                 world.removeEntity(enemy);
             }
         },
-        500
+        100
     );
     }
 

@@ -20,7 +20,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
             bullet.setX(bullet.getX() + changeX * 3);
             bullet.setY(bullet.getY() + changeY * 3);
 
-            // Removes bullet if leaving screen to not cause lag
+            // Removes bullets if leaving the screen to not cause lag
             if (bullet.getX() < 0 || 
             bullet.getX() > gameData.getDisplayWidth() ||
             bullet.getY() < 0 || 

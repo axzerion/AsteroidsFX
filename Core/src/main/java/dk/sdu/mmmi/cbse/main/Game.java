@@ -14,20 +14,16 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-/**
- *
- * @author jcs
- */
+
 class Game {
 
     private final GameData gameData = new GameData();
@@ -45,7 +41,7 @@ class Game {
     }
 
     public void start(Stage window) throws Exception {
-        Text text = new Text(10, 20, "Destroyed asteroids: 0");
+        Text text = new Text(10, 20, "Score: 0");
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
 
@@ -148,11 +144,16 @@ class Game {
                 polygon.setFill(javafx.scene.paint.Color.BLACK);
             }
 
-            // Update health bars
+            // Update health bars and score
             if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
                 for (javafx.scene.Node node : gameWindow.getChildren()) {
-                    if (node instanceof Text && ((Text) node).getText().startsWith("Player Health:")) {
-                        ((Text) node).setText("Player Health: " + ((dk.sdu.mmmi.cbse.playersystem.Player) entity).getHealth());
+                    if (node instanceof Text) {
+                        Text text = (Text) node;
+                        if (text.getText().startsWith("Player Health:")) {
+                            text.setText("Player Health: " + ((dk.sdu.mmmi.cbse.playersystem.Player) entity).getHealth());
+                        } else if (text.getText().startsWith("Score:")) {
+                            text.setText("Score: " + dk.sdu.mmmi.cbse.common.data.Score.getPoints());
+                        }
                     }
                 }
             } else if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
