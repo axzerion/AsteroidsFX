@@ -11,11 +11,13 @@
         <module name="Asteroids" />
         <module name="Collision" />
         <module name="CommonAsteroids" />
-        <module name="Enemy" />
         <module name="CommonBullet" />
         <module name="Common" />
         <module name="Core" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Enemy" target="22" />
+    </bytecodeTargetLevel>
   </component>
 </project>

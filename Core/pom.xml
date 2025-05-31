@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -20,9 +21,6 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
-    <repositories>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -39,16 +37,7 @@
             <artifactId>javafx-base</artifactId>
             <version>21.0.2</version>
         </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>CommonBullet</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
+        <!-- Player can be static, so we include it here -->
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
             <artifactId>Player</artifactId>
@@ -71,9 +60,8 @@
         </dependency>
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>Enemy</artifactId>
+            <artifactId>Common</artifactId>
             <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -86,7 +74,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
@@ -100,9 +88,11 @@
             <artifactId>spring-jcl</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.3.0</version>
                 <executions>
@@ -113,8 +103,26 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>javafx-controls,javafx-graphics,javafx-base,spring-context,spring-core,spring-beans,spring-aop,spring-expression,spring-jcl</includeArtifactIds>
-                            <outputDirectory>../mods-mvn</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <outputDirectory>${project.basedir}/../mods-mvn</outputDirectory>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-core</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>dk.sdu.cbse.asteroids</groupId>
+                                    <artifactId>Core</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.basedir}/../mods-mvn</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

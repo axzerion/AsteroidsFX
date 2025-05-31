@@ -18,12 +18,13 @@ public enum ServiceLocator {
 
     ServiceLocator() {
         try {
-            Path pluginsDir = Paths.get("plugins"); // Directory with plugins JARs
+            // Corrected path to the plugin directory
+            Path pluginsDir = Paths.get("Plugin", "mods-mvn");
 
-            // Search for plugins in the plugins directory
+            // Search for plugins in the specified directory
             ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
 
-            // Find all names of all found plugin modules
+            // Get all module names found in the directory
             List<String> plugins = pluginsFinder
                     .findAll()
                     .stream()
@@ -31,23 +32,21 @@ public enum ServiceLocator {
                     .map(ModuleDescriptor::name)
                     .collect(Collectors.toList());
 
-            // Create configuration that will resolve plugin modules
-            // (verify that the graph of modules is correct)
+            // Resolve plugin modules against the boot layer
             Configuration pluginsConfiguration = ModuleLayer
                     .boot()
                     .configuration()
                     .resolve(pluginsFinder, ModuleFinder.of(), plugins);
 
-            // Create a module layer for plugins
+            // Define a module layer using the system classloader
             layer = ModuleLayer
                     .boot()
                     .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
-
 
     public <T> List<T> locateAll(Class<T> service) {
         ServiceLoader<T> loader = (ServiceLoader<T>) loadermap.get(service);
@@ -57,7 +56,7 @@ public enum ServiceLocator {
             loadermap.put(service, loader);
         }
 
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
 
         if (loader != null) {
             try {

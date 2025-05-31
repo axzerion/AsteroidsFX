@@ -1,27 +1,21 @@
-package dk.sdu.mmmi.cbse.gameplugins;
+package dk.sdu.mmmi.cbse.enemysystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
-import dk.sdu.mmmi.cbse.enemysystem.Enemy;
-import java.util.Random;
 
-public class GamePlugin implements IGamePluginService {
-
+public class EnemyPlugin implements IGamePluginService {
     private Entity enemy;
-    Random random = new Random();
 
-    public GamePlugin() {
-        System.out.println("Enemy GamePlugin constructed!");
+    public EnemyPlugin() {
     }
 
     @Override
     public void start(GameData gameData, World world) {
-        System.out.println("Enemy GamePlugin.start() called!"); // This must print
+        // Add entities to the world
         enemy = createEnemyShip(gameData);
         world.addEntity(enemy);
-        System.out.println("Enemy ship added to world: " + enemy);
     }
 
     private Entity createEnemyShip(GameData gameData) {
@@ -35,7 +29,7 @@ public class GamePlugin implements IGamePluginService {
 
     @Override
     public void stop(GameData gameData, World world) {
-        System.out.println("Enemy GamePlugin.stop() called!");
+        // Remove entities
         world.removeEntity(enemy);
     }
 }

@@ -6,13 +6,18 @@
         <artifactId>asteroids.jpms</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>CommonAsteroids</artifactId>
+    <artifactId>Enemy</artifactId>
     <packaging>jar</packaging>
-    <name>CommonAsteroids</name>
+    <name>Enemy</name>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>CommonBullet</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -20,7 +20,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-class Game extends Application {
+public class Game extends Application {
 
     private final GameData gameData = new GameData();
     private final World world = new World();
@@ -40,6 +40,8 @@ class Game extends Application {
 
     @Override
     public void start(Stage window) {
+        System.out.println("Starting game with " + gamePluginServices.size() + " plugins");
+
         Text text = new Text(10, 20, "Score: 0");
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
@@ -52,13 +54,18 @@ class Game extends Application {
         Scene scene = getScene();
 
         for (IGamePluginService iGamePlugin : getGamePluginServices()) {
+            System.out.println("Starting plugin: " + iGamePlugin.getClass().getName());
             iGamePlugin.start(gameData, world);
         }
+
+        System.out.println("Entities after plugin start: " + world.getEntities().size());
+
         for (Entity entity : world.getEntities()) {
             Polygon polygon = new Polygon(entity.getPolygonCoordinates());
             polygons.put(entity, polygon);
             gameWindow.getChildren().add(polygon);
         }
+
         window.setScene(scene);
         window.setTitle("ASTEROIDS");
         window.show();

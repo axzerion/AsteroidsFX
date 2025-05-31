@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>dk.sdu.mmmi.cbse</groupId>
     <artifactId>asteroids.jpms</artifactId>
     <version>1.0.1-SNAPSHOT</version>
@@ -12,6 +15,7 @@
         <module>Core</module>
         <module>Common</module>
         <module>Player</module>
+        <module>Enemy</module>
         <module>Bullet</module>
         <module>CommonBullet</module>
         <module>CommonAsteroids</module>
@@ -86,6 +90,26 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>dk.sdu.mmmi.cbse</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>1.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>dk.sdu.mmmi.cbse</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>1.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>dk.sdu.mmmi.cbse</groupId>-->
+<!--            <artifactId>CommonBullet</artifactId>-->
+<!--            <version>1.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
     <build>
         <plugins>
             <plugin>
@@ -102,6 +126,7 @@
                         <configuration>
                             <outputDirectory>${project.basedir}/mods-mvn</outputDirectory>
                             <includeScope>runtime</includeScope>
+                            <excludeArtifactIds>Enemy</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -138,7 +163,6 @@
 
     <profiles>
         <profile>
-            <!-- parent project should delete 'mods-mvn' -->
             <id>parent-project</id>
             <activation>
                 <file>
@@ -165,7 +189,6 @@
             </build>
         </profile>
         <profile>
-            <!-- child projects should copy artifact into 'mods-mvn' -->
             <id>child-project</id>
             <activation>
                 <file>
