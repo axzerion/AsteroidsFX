@@ -13,7 +13,7 @@ public enum ServiceLocator {
 
     INSTANCE;
 
-    private static final Map<Class, ServiceLoader> loadermap = new HashMap<>();
+    private static final Map<Class<?>, ServiceLoader<?>> loadermap = new HashMap<>();
     private final ModuleLayer layer;
 
     ServiceLocator() {
@@ -50,7 +50,7 @@ public enum ServiceLocator {
 
 
     public <T> List<T> locateAll(Class<T> service) {
-        ServiceLoader<T> loader = loadermap.get(service);
+        ServiceLoader<T> loader = (ServiceLoader<T>) loadermap.get(service);
 
         if (loader == null) {
             loader = ServiceLoader.load(layer, service);
@@ -71,5 +71,4 @@ public enum ServiceLocator {
 
         return list;
     }
-
 }
