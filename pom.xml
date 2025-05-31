@@ -125,8 +125,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.basedir}/mods-mvn</outputDirectory>
-                            <includeScope>runtime</includeScope>
-                            <excludeArtifactIds>Enemy</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
