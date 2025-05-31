@@ -20,7 +20,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
             bullet.setX(bullet.getX() + changeX * 3);
             bullet.setY(bullet.getY() + changeY * 3);
 
-            // Removes bullets if leaving the screen to not cause lag
+            // Removes bullet if leaving screen to not cause lag
             if (bullet.getX() < 0 || 
             bullet.getX() > gameData.getDisplayWidth() ||
             bullet.getY() < 0 || 
@@ -33,7 +33,8 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
-        Entity bullet = new Bullet();
+    
+        Bullet bullet = new Bullet();
 
         bullet.setPolygonCoordinates(2, -2, 2, 2, -2, 2, -2, -2);
 

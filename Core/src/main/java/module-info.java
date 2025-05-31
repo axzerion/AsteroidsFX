@@ -1,12 +1,12 @@
 module Core {
 
     requires Common;
+    requires CommonBullet;
+    requires CommonAsteroids;
     requires javafx.controls;
     requires javafx.graphics;
     requires Asteroids;
     requires Collision;
-    requires CommonBullet;
-    requires CommonAsteroids;
     requires Player;
     requires Enemy;
 
@@ -16,9 +16,9 @@ module Core {
 
     opens dk.sdu.mmmi.cbse.main to spring.core, spring.beans, spring.context;
 
-    exports dk.sdu.mmmi.cbse.main;
-
     uses dk.sdu.mmmi.cbse.common.services.IGamePluginService;
     uses dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
     uses dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+
+    exports dk.sdu.mmmi.cbse.main;
 }
