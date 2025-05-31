@@ -14,22 +14,31 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     private Random random = new Random();
     private long lastShotTime = 0;
+    private long lastDirectionChange = 0;
+    private static final long DIRECTION_CHANGE_INTERVAL = 1000;
 
     @Override
     public void process(GameData gameData, World world) {
         for (Entity enemy : world.getEntities(Enemy.class)) {
-            double changeX = Math.cos(Math.toRadians(enemy.getRotation()));
-            double changeY = Math.sin(Math.toRadians(enemy.getRotation()));
+            long currentTime = System.currentTimeMillis();
+            
+            // Only change direction if enough time has passed
+            if (currentTime - lastDirectionChange >= DIRECTION_CHANGE_INTERVAL) {
+                // Random turn between -90 and 90 degrees
+                enemy.setRotation(enemy.getRotation() + (random.nextInt(181) - 90));
+                lastDirectionChange = currentTime;
+            }
+
+            // Move with consistent speed
+            double speed = 1.0;
+            double changeX = Math.cos(Math.toRadians(enemy.getRotation())) * speed;
+            double changeY = Math.sin(Math.toRadians(enemy.getRotation())) * speed;
 
             enemy.setX(enemy.getX() + changeX);
             enemy.setY(enemy.getY() + changeY);
 
-            if (random.nextInt(100) < 20) {
-                enemy.setRotation(enemy.getRotation() + (random.nextInt(3)));
-            }
-
+            // Shooting logic
             if (random.nextInt(100) < 10) {
-                long currentTime = System.currentTimeMillis();
                 if (currentTime - lastShotTime >= 100) {
                     ServiceLoader.load(BulletSPI.class).stream()
                             .map(ServiceLoader.Provider::get)
@@ -43,18 +52,20 @@ public class EnemyControlSystem implements IEntityProcessingService {
                 }
             }
 
+            // Screen boundaries
             if (enemy.getX() < 0) {
                 enemy.setX(1);
+                enemy.setRotation(0); 
+                lastDirectionChange = currentTime; 
             }
-
             if (enemy.getX() > gameData.getDisplayWidth()) {
                 enemy.setX(gameData.getDisplayWidth()-1);
+                enemy.setRotation(180);
+                lastDirectionChange = currentTime;
             }
-
             if (enemy.getY() < 0) {
                 enemy.setY(1);
             }
-
             if (enemy.getY() > gameData.getDisplayHeight()) {
                 enemy.setY(gameData.getDisplayHeight()-1);
             }
