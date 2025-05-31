@@ -41,4 +41,4 @@ class ModuleConfig {
         Set<String> moduleNames = PluginLoader.discoverModules("plugins");
         return PluginLoader.loadPlugins("plugins", moduleNames, IPostEntityProcessingService.class);
     }
-} 
+}
