@@ -34,13 +34,13 @@ class Game {
     private final List<IEntityProcessingService> entityProcessingServiceList;
     private final List<IPostEntityProcessingService> postEntityProcessingServices;
 
-    Game(List<IGamePluginService> gamePluginServices, List<IEntityProcessingService> entityProcessingServiceList, List<IPostEntityProcessingService> postEntityProcessingServices) {
+    Game() {
         this.gamePluginServices = gamePluginServices;
         this.entityProcessingServiceList = entityProcessingServiceList;
         this.postEntityProcessingServices = postEntityProcessingServices;
     }
 
-    public void start(Stage window) throws Exception {
+    public void start(Stage window) {
         Text text = new Text(10, 20, "Score: 0");
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
@@ -137,7 +137,7 @@ class Game {
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
 
-            // Set color based on entity type
+            // Set color based on the entity type
             if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
                 polygon.setFill(javafx.scene.paint.Color.RED);
             } else if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {

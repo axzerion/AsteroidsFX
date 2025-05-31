@@ -7,7 +7,7 @@
     <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>AsteroidsFX</name>
-    
+
     <modules>
         <module>Core</module>
         <module>Common</module>
@@ -17,17 +17,16 @@
         <module>CommonAsteroids</module>
         <module>Asteroids</module>
         <module>Collision</module>
-        <module>Enemy</module>
-
     </modules>
+
     <properties>
         <java>java</java>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>        
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <spring.version>6.1.3</spring.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -59,7 +58,7 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
                 <version>${spring.version}</version>
-            </dependency>        
+            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -90,21 +89,27 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/mods-mvn</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
-            </plugin>
-            <!-- execute the resulting project -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version> 3.5.0</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -116,19 +121,16 @@
                     <executable>java</executable>
                     <workingDirectory>.</workingDirectory>
                     <arguments>
-                        <argument>--module-path=mods-mvn</argument>
-                        <argument>--class-path=libs/*</argument>
-
-                        <!-- because spark.core is an automatic module and actually required,
-                        monitor.observer.zero would be resolved as well and does not need
-                        to be added explicitly;
-                        I still wanted to do it for clarity, but for some reason that results
-                        in "java.lang.module.FindException: Module monitor.observer.zero not found";
-                        strange... -->
-                        <!--                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:8000</argument>-->
+                        <argument>--module-path=${project.basedir}/mods-mvn</argument>
+                        <argument>--add-modules=javafx.graphics,javafx.controls</argument>
                         <argument>--module=Core/dk.sdu.mmmi.cbse.main.Main</argument>
-                        <argument>--add-modules javafx.graphics</argument>
                     </arguments>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>java.util.logging.config.file</key>
+                            <value>${project.basedir}/logging.properties</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>

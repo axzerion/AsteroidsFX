@@ -8,7 +8,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
  * This interface is responsible for updating the state of game entities,
  * such as movement, collisionsystem detection, and other game logic.
  */
-public interface IEntityProcessingService {
+public interface  IEntityProcessingService {
 
     /**
      * Processes all relevant entities in the game world.

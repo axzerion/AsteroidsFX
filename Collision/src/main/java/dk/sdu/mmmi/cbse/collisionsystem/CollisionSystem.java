@@ -8,9 +8,9 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.IHealth;
 import dk.sdu.mmmi.cbse.playersystem.Player;
 import dk.sdu.mmmi.cbse.common.asteroids.AsteroidSize;
-import dk.sdu.mmmi.cbse.enemysystem.Enemy;
 import dk.sdu.mmmi.cbse.common.data.Score;
 
 public class CollisionSystem implements IPostEntityProcessingService {
@@ -50,20 +50,17 @@ public class CollisionSystem implements IPostEntityProcessingService {
                     Player p = (Player) getInstance(entity1, entity2, Player.class);
                     Bullet b = (Bullet) getInstance(entity1, entity2, Bullet.class);
                     handlePlayerBulletCollision(p, b, world);
-                } else if (isPair(entity1, entity2, Enemy.class, Bullet.class)) {
-                    Enemy e = (Enemy) getInstance(entity1, entity2, Enemy.class);
+                } else if (isPair(entity1, entity2, IHealth.class, Bullet.class)) {
+                    IHealth e = (IHealth) getInstance(entity1, entity2, IHealth.class);
                     Bullet b = (Bullet) getInstance(entity1, entity2, Bullet.class);
-                    handleEnemyBulletCollision(e, b, world);
-                } else if (isPair(entity1, entity2, Enemy.class, Asteroid.class)) {
-                    Enemy e = (Enemy) getInstance(entity1, entity2, Enemy.class);
+                    handleHealthBulletCollision(e, b, world);
+                } else if (isPair(entity1, entity2, IHealth.class, Asteroid.class)) {
+                    IHealth e = (IHealth) getInstance(entity1, entity2, IHealth.class);
                     Asteroid a = (Asteroid) getInstance(entity1, entity2, Asteroid.class);
-                    handleEnemyAsteroidCollision(e, a, world);
-                }
-
+                    handleHealthAsteroidCollision(e, a, world);
                 }
             }
-
-
+        }
     }
 
     private boolean isPair(Entity e1, Entity e2, Class<?> clsA, Class<?> clsB) {
@@ -72,14 +69,14 @@ public class CollisionSystem implements IPostEntityProcessingService {
     }
 
     private <T> T getInstance(Entity e1, Entity e2, Class<T> cls) {
-            return cls.cast(cls.isInstance(e1) ? e1 : e2);
-        }
+        return cls.cast(cls.isInstance(e1) ? e1 : e2);
+    }
 
-    private void handleEnemyBulletCollision(Enemy enemy, Bullet bullet, World world) {
-        enemy.setHealth(enemy.getHealth() - 1);
+    private void handleHealthBulletCollision(IHealth entity, Bullet bullet, World world) {
+        entity.setHealth(entity.getHealth() - 1);
         world.removeEntity(bullet);
-        if (enemy.getHealth() <= 0) {
-            world.removeEntity(enemy);
+        if (entity.getHealth() <= 0) {
+            world.removeEntity((Entity)entity);
         }
     }
 
@@ -97,7 +94,6 @@ public class CollisionSystem implements IPostEntityProcessingService {
         // Add points based on asteroid size
         // Only award points if it's a player bullet
         if (bullet.isPlayerBullet()) {
-            
             if (asteroid.getSize() == AsteroidSize.LARGE) {
                 Score.addPoints(20);
             } else if (asteroid.getSize() == AsteroidSize.MEDIUM) {
@@ -115,37 +111,33 @@ public class CollisionSystem implements IPostEntityProcessingService {
     }
     
     private void handlePlayerAsteroidCollision(Player player, Asteroid asteroid, World world) {
-
         player.setHealth(0);
-
         world.removeEntity(asteroid);
 
         new java.util.Timer().schedule(
-        new java.util.TimerTask() {
-            @Override
-            public void run() {
-                world.removeEntity(player);
-            }
-        },
-        100
-    );
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    world.removeEntity(player);
+                }
+            },
+            100
+        );
     }
 
-    private void handleEnemyAsteroidCollision(Enemy enemy, Asteroid asteroid, World world) {
-
-        enemy.setHealth(0);
-        
+    private void handleHealthAsteroidCollision(IHealth entity, Asteroid asteroid, World world) {
+        entity.setHealth(0);
         world.removeEntity(asteroid);
 
         new java.util.Timer().schedule(
-        new java.util.TimerTask() {
-            @Override
-            public void run() {
-                world.removeEntity(enemy);
-            }
-        },
-        100
-    );
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    world.removeEntity((Entity)entity);
+                }
+            },
+            100
+        );
     }
 
     public Boolean collides(Entity entity1, Entity entity2) {
@@ -154,5 +146,4 @@ public class CollisionSystem implements IPostEntityProcessingService {
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
         return distance < (entity1.getRadius() + entity2.getRadius());
     }
-
 }

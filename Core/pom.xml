@@ -16,8 +16,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -56,11 +56,6 @@
         </dependency>
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>Enemy</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
             <artifactId>Asteroids</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
@@ -72,6 +67,11 @@
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
             <artifactId>CommonAsteroids</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>dk.sdu.mmmi.cbse</groupId>
+            <artifactId>ModuleLayer</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

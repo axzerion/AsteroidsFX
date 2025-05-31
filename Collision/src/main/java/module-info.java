@@ -7,6 +7,5 @@ module Collision {
     requires Player;
     requires CommonAsteroids;
     requires Asteroids;
-    requires Enemy;
     provides IPostEntityProcessingService with CollisionSystem;
 }
