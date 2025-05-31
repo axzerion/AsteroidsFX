@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="maven-antrun-" default="main">
   <target name="main">
-    <mkdir dir="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\Plugins\Enemy/../../plugins/mods-mvn" />
-    <copy file="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\Plugins\Enemy\target/Enemy-1.0.1-SNAPSHOT.jar" todir="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\Plugins\Enemy/../../plugins/mods-mvn" overwrite="true" />
+    <mkdir dir="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\plugins\Enemy/../../plugins/mods-mvn" />
+    <copy file="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\plugins\Enemy\target/Enemy-1.0.1-SNAPSHOT.jar" todir="C:\Users\Patrick\Documents\GitHub\AsteroidsFX\plugins\Enemy/../../plugins/mods-mvn" overwrite="true" />
   </target>
 </project>

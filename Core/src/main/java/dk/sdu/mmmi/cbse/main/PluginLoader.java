@@ -1,7 +1,5 @@
 package dk.sdu.mmmi.cbse.main;
 
-import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
-
 import java.io.IOException;
 import java.lang.module.Configuration;
 import java.lang.module.ModuleFinder;
@@ -19,16 +17,27 @@ import java.util.stream.Collectors;
 
 public class PluginLoader {
 
-    public static List<IGamePluginService> loadPlugins(String pluginDir, String moduleName) {
+    public static Set<String> discoverModules(String pluginDir) {
+        try {
+            Path pluginPath = Path.of(pluginDir);
+            ModuleFinder finder = ModuleFinder.of(pluginPath);
+            Set<ModuleReference> modules = finder.findAll();
+            return modules.stream()
+                    .map(moduleRef -> moduleRef.descriptor().name())
+                    .collect(Collectors.toSet());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to discover plugin modules", e);
+        }
+    }
+
+    public static <T> List<T> loadPlugins(String pluginDir, Set<String> moduleNames, Class<T> serviceType) {
         try {
             Path pluginPath = Path.of(pluginDir);
             ModuleFinder finder = ModuleFinder.of(pluginPath);
             ModuleLayer parent = ModuleLayer.boot();
 
-            Configuration config = parent.configuration()
-                    .resolve(finder, ModuleFinder.of(), Set.of(moduleName));
+            Configuration config = parent.configuration().resolve(finder, ModuleFinder.of(), moduleNames);
 
-            // Build a URLClassLoader to isolate the plugin layer
             List<URL> jarUrls = Files.list(pluginPath)
                     .filter(path -> path.toString().endsWith(".jar"))
                     .map(PluginLoader::toURL)
@@ -36,15 +45,15 @@ public class PluginLoader {
 
             ClassLoader pluginClassLoader = new URLClassLoader(
                     jarUrls.toArray(new URL[0]),
-                    null 
+                    null
             );
 
             ModuleLayer layer = parent.defineModulesWithOneLoader(config, pluginClassLoader);
 
-            ServiceLoader<IGamePluginService> loader = ServiceLoader.load(layer, IGamePluginService.class);
-            return loader.stream().map(ServiceLoader.Provider::get).toList();
+            ServiceLoader<T> loader = ServiceLoader.load(layer, serviceType);
+            return loader.stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load plugin module: " + moduleName, e);
+            throw new RuntimeException("Failed to load plugins for service: " + serviceType.getName(), e);
         }
     }
 

@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @Configuration
 class ModuleConfig {
@@ -42,4 +41,4 @@ class ModuleConfig {
         Set<String> moduleNames = PluginLoader.discoverModules("plugins");
         return PluginLoader.loadPlugins("plugins", moduleNames, IPostEntityProcessingService.class);
     }
-}
+} 

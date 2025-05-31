@@ -71,8 +71,9 @@
         </dependency>
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>ModuleLayer</artifactId>
+            <artifactId>Enemy</artifactId>
             <version>1.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
