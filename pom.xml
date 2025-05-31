@@ -90,7 +90,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-<!--    <dependencies>-->
+    <!--    <dependencies>-->
 <!--        <dependency>-->
 <!--            <groupId>dk.sdu.mmmi.cbse</groupId>-->
 <!--            <artifactId>Common</artifactId>-->

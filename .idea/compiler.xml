@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Bullet" />
         <module name="Player" />
+        <module name="Enemy (2) (dk.sdu.cbse)" />
         <module name="Asteroids" />
         <module name="Collision" />
         <module name="CommonAsteroids" />
@@ -18,6 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Enemy" target="22" />
+      <module name="Enemy (2) (dk.sdu.cbse)" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

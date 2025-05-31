@@ -8,6 +8,7 @@ module Core {
     requires CommonBullet;
     requires CommonAsteroids;
     requires Player;
+    requires Enemy;
 
     requires spring.context;
     requires spring.beans;
