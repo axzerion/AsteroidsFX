@@ -91,8 +91,8 @@ public class CollisionSystem implements IPostEntityProcessingService {
     private void handleAsteroidBulletCollision(Asteroid asteroid, Bullet bullet, World world, GameData gameData) {
         if (bullet.isPlayerBullet()) {
             int points = switch (asteroid.getSize()) {
-                case LARGE -> 40;
-                case MEDIUM -> 20;
+                case LARGE -> 50;
+                case MEDIUM -> 25;
                 case SMALL -> 10;
             };
             try {
@@ -124,7 +124,7 @@ public class CollisionSystem implements IPostEntityProcessingService {
                 world.removeEntity(player);
             }
         },
-        500
+        100
     );
     }
 
@@ -141,7 +141,7 @@ public class CollisionSystem implements IPostEntityProcessingService {
                 world.removeEntity(enemy);
             }
         },
-        500
+        100
     );
     }
 
