@@ -1,4 +1,5 @@
 module Common {
+    requires spring.web;
 
     exports dk.sdu.mmmi.cbse.common.data;
     exports dk.sdu.mmmi.cbse.common.services;

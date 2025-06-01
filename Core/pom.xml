@@ -37,7 +37,6 @@
             <artifactId>javafx-base</artifactId>
             <version>21.0.2</version>
         </dependency>
-        <!-- Player can be static, so we include it here -->
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
             <artifactId>Player</artifactId>

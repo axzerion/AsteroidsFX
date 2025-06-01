@@ -11,6 +11,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.playersystem.Player;
 import dk.sdu.mmmi.cbse.common.asteroids.AsteroidSize;
 import dk.sdu.mmmi.cbse.enemysystem.Enemy;
+import dk.sdu.mmmi.cbse.common.util.ScoreClient;
 
 public class CollisionSystem implements IPostEntityProcessingService {
 
@@ -88,29 +89,26 @@ public class CollisionSystem implements IPostEntityProcessingService {
     }
 
     private void handleAsteroidBulletCollision(Asteroid asteroid, Bullet bullet, World world, GameData gameData) {
-    // Only award points if it's player's bullet
-    if (bullet.isPlayerBullet()) {
-        switch(asteroid.getSize()) {
-            case LARGE:
-                gameData.addScore(40);
-                break;
-            case MEDIUM:
-                gameData.addScore(20);
-                break;
-            case SMALL:
-                gameData.addScore(10);
-                break;
+        if (bullet.isPlayerBullet()) {
+            int points = switch (asteroid.getSize()) {
+                case LARGE -> 40;
+                case MEDIUM -> 20;
+                case SMALL -> 10;
+            };
+            try {
+                ScoreClient.addPoints(points);
+            } catch (Exception e) {
+                System.err.println("Failed to add points: " + e.getMessage());
+            }
         }
-    }
-    
-    world.removeEntity(bullet);
 
-    if (asteroid.getSize() != AsteroidSize.SMALL) {
-        asteroidSplitter.createSplitAsteroid(asteroid, world);
-    }
+        world.removeEntity(bullet);
 
-    world.removeEntity(asteroid);
-    
+        if (asteroid.getSize() != AsteroidSize.SMALL) {
+            asteroidSplitter.createSplitAsteroid(asteroid, world);
+        }
+
+        world.removeEntity(asteroid);
     }
 
     private void handlePlayerAsteroidCollision(Player player, Asteroid asteroid, World world, GameData gameData) {
