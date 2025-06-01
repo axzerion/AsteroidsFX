@@ -1,9 +1,10 @@
 package dk.sdu.mmmi.cbse.enemysystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.HasHealth;
 
 
-public class Enemy extends Entity {
+public class Enemy extends Entity implements HasHealth {
     private int health = 5;  // Start with 5 health
 
     public int getHealth() {

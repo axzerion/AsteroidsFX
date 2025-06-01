@@ -1,9 +1,6 @@
 package dk.sdu.mmmi.cbse.main;
 
-import dk.sdu.mmmi.cbse.common.data.Entity;
-import dk.sdu.mmmi.cbse.common.data.GameData;
-import dk.sdu.mmmi.cbse.common.data.GameKeys;
-import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.*;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
@@ -122,10 +119,11 @@ public class Game extends Application {
                 polygons.remove(polygonEntity);
                 gameWindow.getChildren().remove(removedPolygon);
             }
-            for (javafx.scene.Node node : gameWindow.getChildren()) {
-                if (node instanceof Text && ((Text) node).getText().startsWith("Score:")) {
-                    ((Text) node).setText("Score: " + ScoreClient.getScore());
-                }
+        }
+
+        for (javafx.scene.Node node : gameWindow.getChildren()) {
+            if (node instanceof Text text && text.getText().startsWith("Score:")) {
+                text.setText("Score: " + ScoreClient.getScore());
             }
         }
 
@@ -136,28 +134,26 @@ public class Game extends Application {
                 polygons.put(entity, polygon);
                 gameWindow.getChildren().add(polygon);
             }
+
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
 
-            // Set color based on the ship type
-            if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
+            // Color by class name
+            String typeName = entity.getClass().getSimpleName().toLowerCase();
+            if (typeName.contains("enemy")) {
                 polygon.setFill(javafx.scene.paint.Color.RED);
-            } else if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
+            } else if (typeName.contains("player")) {
                 polygon.setFill(javafx.scene.paint.Color.BLACK);
             }
 
-            // Update health bars
-            if (entity instanceof dk.sdu.mmmi.cbse.playersystem.Player) {
+            if (entity instanceof HasHealth healthEntity) {
+                int health = healthEntity.getHealth();
+                String tag = typeName.contains("player") ? "Player" : typeName.contains("enemy") ? "Enemy" : "Unit";
+
                 for (javafx.scene.Node node : gameWindow.getChildren()) {
-                    if (node instanceof Text && ((Text) node).getText().startsWith("Player Health:")) {
-                        ((Text) node).setText("Player Health: " + ((dk.sdu.mmmi.cbse.playersystem.Player) entity).getHealth());
-                    }
-                }
-            } else if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
-                for (javafx.scene.Node node : gameWindow.getChildren()) {
-                    if (node instanceof Text && ((Text) node).getText().startsWith("Enemy Health:")) {
-                        ((Text) node).setText("Enemy Health: " + ((dk.sdu.mmmi.cbse.enemysystem.Enemy) entity).getHealth());
+                    if (node instanceof Text text && text.getText().startsWith(tag + " Health:")) {
+                        text.setText(tag + " Health: " + health);
                     }
                 }
             }

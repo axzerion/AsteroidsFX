@@ -1,9 +1,10 @@
 package dk.sdu.mmmi.cbse.playersystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.HasHealth;
 
 
-public class Player extends Entity {
+public class Player extends Entity implements HasHealth {
     private int health = 5;  // Start with 5 health
 
     public int getHealth() {

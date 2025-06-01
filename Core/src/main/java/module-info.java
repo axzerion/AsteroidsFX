@@ -7,8 +7,6 @@ module Core {
     requires javafx.graphics;
     requires Asteroids;
     requires Collision;
-    requires Player;
-    requires Enemy;
 
     requires spring.context;
     requires spring.beans;
