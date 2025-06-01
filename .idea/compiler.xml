@@ -9,7 +9,7 @@
         <module name="Bullet" />
         <module name="Player" />
         <module name="scoringsystem" />
-        <module name="Enemy (2) (dk.sdu.cbse)" />
+        <module name="Enemy" />
         <module name="Asteroids" />
         <module name="Collision" />
         <module name="CommonAsteroids" />
@@ -20,7 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Enemy (2) (dk.sdu.cbse)" target="17" />
+      <module name="Enemy" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
