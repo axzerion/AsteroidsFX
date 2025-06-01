@@ -8,16 +8,25 @@ public class ScoreClient {
 
     public static void addPoints(int points) {
         try {
-            restTemplate.postForObject(BASE_URL + "?point=" + points, null, Long.class);
+            restTemplate.postForObject(BASE_URL + "/add?points=" + points, null, Void.class);
         } catch (Exception e) {
             System.err.println("Failed to add score to microservice: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void reset() {
+        try {
+            restTemplate.postForObject(BASE_URL + "/reset", null, Void.class);
+        } catch (Exception e) {
+            System.err.println("Failed to reset score on microservice: " + e.getMessage());
         }
     }
 
     public static int getScore() {
         try {
-            Long score = restTemplate.getForObject(BASE_URL, Long.class);
-            return score != null ? score.intValue() : -1;
+            return restTemplate.getForObject(BASE_URL, Integer.class);
         } catch (Exception e) {
             System.err.println("Failed to fetch score from microservice: " + e.getMessage());
             return -1;
