@@ -23,7 +23,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
                 .collect(Collectors.toList());
     }
 
-    //for testing purposes
+    //for testing
     public PlayerControlSystem(Collection<BulletSPI> bulletSPIs) {
         this.bulletSPIs = bulletSPIs;
     }

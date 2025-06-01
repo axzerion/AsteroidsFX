@@ -1,6 +1,5 @@
 package dk.sdu.mmmi.cbse.collisionsystem;
 
-import dk.sdu.mmmi.cbse.asteroid.AsteroidSplitterImpl;
 import dk.sdu.mmmi.cbse.common.asteroids.Asteroid;
 import dk.sdu.mmmi.cbse.common.asteroids.AsteroidSize;
 import dk.sdu.mmmi.cbse.common.asteroids.IAsteroidSplitter;
@@ -12,12 +11,24 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.util.ScoreClient;
 
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class CollisionSystem implements IPostEntityProcessingService {
 
-    private final IAsteroidSplitter asteroidSplitter;
+    private IAsteroidSplitter asteroidSplitter;
 
     public CollisionSystem() {
-        this.asteroidSplitter = new AsteroidSplitterImpl();
+        // Load IAsteroidSplitter dynamically
+        ServiceLoader<IAsteroidSplitter> loader = ServiceLoader.load(IAsteroidSplitter.class);
+        Optional<IAsteroidSplitter> opt = loader.findFirst();
+        if (opt.isPresent()) {
+            this.asteroidSplitter = opt.get();
+        } else {
+            System.err.println("[WARNING] No IAsteroidSplitter implementation found. Asteroids will not split.");
+        }
     }
 
     @Override
@@ -29,9 +40,9 @@ public class CollisionSystem implements IPostEntityProcessingService {
                 if (!collides(entity1, entity2)) continue;
 
                 if (isPair(entity1, entity2, Asteroid.class, Bullet.class)) {
-                    Asteroid a = getInstance(entity1, entity2, Asteroid.class);
-                    Bullet b = getInstance(entity1, entity2, Bullet.class);
-                    handleAsteroidBulletCollision(a, b, world);
+                    Asteroid asteroid = getInstance(entity1, entity2, Asteroid.class);
+                    Bullet bullet = getInstance(entity1, entity2, Bullet.class);
+                    handleAsteroidBulletCollision(asteroid, bullet, world);
                 } else if (isPair(entity1, entity2, HasHealth.class, Bullet.class)) {
                     HasHealth target = getInstance(entity1, entity2, HasHealth.class);
                     Bullet bullet = getInstance(entity1, entity2, Bullet.class);
@@ -57,21 +68,22 @@ public class CollisionSystem implements IPostEntityProcessingService {
     private void handleGenericBulletCollision(HasHealth target, Bullet bullet, World world) {
         target.setHealth(target.getHealth() - 1);
         world.removeEntity(bullet);
-        if (target.getHealth() <= 0) {
-            world.removeEntity((Entity) target);
+        if (target.getHealth() <= 0 && target instanceof Entity entity) {
+            world.removeEntity(entity);
         }
     }
 
     private void handleGenericAsteroidCollision(HasHealth target, Asteroid asteroid, World world) {
         target.setHealth(0);
         world.removeEntity(asteroid);
-
-        new java.util.Timer().schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                world.removeEntity((Entity) target);
-            }
-        }, 100);
+        if (target instanceof Entity entity) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    world.removeEntity(entity);
+                }
+            }, 100);
+        }
     }
 
     private void handleAsteroidBulletCollision(Asteroid asteroid, Bullet bullet, World world) {
@@ -90,7 +102,7 @@ public class CollisionSystem implements IPostEntityProcessingService {
 
         world.removeEntity(bullet);
 
-        if (asteroid.getSize() != AsteroidSize.SMALL) {
+        if (asteroid.getSize() != AsteroidSize.SMALL && asteroidSplitter != null) {
             asteroidSplitter.createSplitAsteroid(asteroid, world);
         }
 

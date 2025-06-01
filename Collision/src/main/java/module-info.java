@@ -5,7 +5,7 @@ module Collision {
     requires Common;
     requires CommonBullet;
     requires CommonAsteroids;
-    requires Asteroids;
 
     provides IPostEntityProcessingService with CollisionSystem;
+    uses dk.sdu.mmmi.cbse.common.asteroids.IAsteroidSplitter;
 }

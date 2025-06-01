@@ -5,7 +5,6 @@ module Core {
     requires CommonAsteroids;
     requires javafx.controls;
     requires javafx.graphics;
-    requires Asteroids;
     requires Collision;
 
     requires spring.context;

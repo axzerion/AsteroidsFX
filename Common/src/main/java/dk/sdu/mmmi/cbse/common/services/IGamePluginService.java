@@ -30,20 +30,8 @@ public interface IGamePluginService {
 
     /**
      * Stops and cleans up the game plugin.
-     * 
-     * Pre-conditions:
-     * - gameData must not be null
-     * - world must not be null
-     * - The plugin must be in a started state
-     * 
-     * Post-conditions:
-     * - All entities created by this plugin are removed from the world
-     * - The plugin's resources are cleaned up
-     * - The plugin is in a stopped state
-     *
-     * @param gameData The game data containing current game state and configuration
-     * @param world The game world from which entities should be removed
      */
+
     void stop(GameData gameData, World world);
 
 }

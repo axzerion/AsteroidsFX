@@ -5,7 +5,7 @@ import dk.sdu.mmmi.cbse.common.data.HasHealth;
 
 
 public class Player extends Entity implements HasHealth {
-    private int health = 5;  // Start with 5 health
+    private int health = 5;
 
     public int getHealth() {
         return health;

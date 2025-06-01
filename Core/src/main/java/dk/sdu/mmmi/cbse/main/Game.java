@@ -77,7 +77,7 @@ public class Game extends Application {
 
         });
 
-        // Lookup all Game Plugins using ServiceLoader
+        //  Look up all Game Plugins using ServiceLoader
         for (IGamePluginService iGamePlugin : getGamePluginServices()) {
             iGamePlugin.start(gameData, world);
         }

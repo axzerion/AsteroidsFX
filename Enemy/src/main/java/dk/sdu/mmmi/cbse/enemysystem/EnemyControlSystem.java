@@ -27,12 +27,10 @@ public class EnemyControlSystem implements IEntityProcessingService {
             
             // Only change direction if enough time has passed
             if (currentTime - lastDirectionChange >= DIRECTION_CHANGE_INTERVAL) {
-                // Random turn between -90 and 90 degrees
                 enemy.setRotation(enemy.getRotation() + (random.nextInt(181) - 90));
                 lastDirectionChange = currentTime;
             }
 
-            // Move with consistent speed
             double speed = 1.0;
             double changeX = Math.cos(Math.toRadians(enemy.getRotation())) * speed;
             double changeY = Math.sin(Math.toRadians(enemy.getRotation())) * speed;
